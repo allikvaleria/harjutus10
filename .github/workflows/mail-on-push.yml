@@ -1,24 +1,25 @@
-name: Mail on Push
+name: Send email on push
 
-on:
-  push:
-
+on: [push]
 jobs:
-  mail_on_push:
+  send_mail:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
       - name: Send mail
-        uses: allikvaleria/action-send-mail@v3
+        uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: Test
-          body: Kõik töötab
-          to: allikvaleria@gmail.com
-          from: Github action
+          subject: "Push to ${{ github.repository }}"
+          to: "allikvaleria@gmail.com"
+          from: ${{ secrets.MAIL_USERNAME }}
+          secure: true
+          body: |
+            New push in repository: ${{ github.repository }}
+            Author: ${{ github.event.pusher.name }}
+            Message: ${{ github.event.head_commit.message }}
+
+
+            
